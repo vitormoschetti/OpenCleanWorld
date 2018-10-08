@@ -1,11 +1,8 @@
 # depslib dependency file v1.0
-1539039205 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\main.c
-	<stdio.h>
-	<stdlib.h>
+1539041452 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\main.c
 	<allegro5/allegro.h>
-	<allegro5/allegro_primitives.h>
 	<allegro5/allegro_image.h>
-	"allegro_util.h"
+	<stdio.h>
 
 1372649932 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\allegro5\include\allegro5\allegro.h
 	"allegro5/base.h"
