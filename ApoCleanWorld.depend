@@ -1,8 +1,11 @@
 # depslib dependency file v1.0
-1538945858 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\main.c
+1539035637 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\main.c
 	<stdio.h>
+	<stdlib.h>
 	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
 	<allegro5/allegro_image.h>
+	"allegro_util.h"
 
 1372649932 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\allegro5\include\allegro5\allegro.h
 	"allegro5/base.h"
@@ -231,10 +234,14 @@
 
 1362349100 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\allegro5\include\allegro5\allegro_image.h
 
-1538945690 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\allegro_util.c
+1539038234 source:c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\allegro_util.c
 	<stdio.h>
+	<stdlib.h>
 	<allegro5/allegro.h>
+	<allegro5/allegro_primitives.h>
 	<allegro5/allegro_image.h>
+	<allegro5/allegro_acodec.h>
+	"allegro_util.h"
 
 1372649932 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\allegro5\include\allegro5\allegro_primitives.h
 	<allegro5/allegro.h>
@@ -253,8 +260,6 @@
 	"allegro5/allegro.h"
 	"allegro5/allegro_audio.h"
 
-1538944800 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\allegro_util.h
+1539033690 c:\users\vitor moschetti\desktop\senac\2º semestre\pi ii - jogo educacional 2d\apocleanworld\allegro_util.h
 	<allegro5/allegro.h>
-	<allegro5/allegro_font.h>
-	<allegro5/allegro_audio.h>
 
