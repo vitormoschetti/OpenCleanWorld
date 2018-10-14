@@ -7,6 +7,7 @@
 
 const int LARGURA_TELA = 720;
 const int ALTURA_TELA = 432;
+int POSICAO_SETA_MENU[3] = {260, 300, 340}, POSICAO_ATUAL_MENU = 0;
 
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
@@ -18,7 +19,7 @@ bool inicializar();
 int main(void)
 {
     bool sair = false;
-    int tecla = 0;
+    int tecla = 1;
 
     if (!inicializar())
     {
@@ -39,16 +40,20 @@ int main(void)
                 switch(evento.keyboard.keycode)
                 {
                 case ALLEGRO_KEY_UP:
+                  if(POSICAO_ATUAL_MENU == 0){
+                        POSICAO_ATUAL_MENU = 2;
+                    }else{
+                        POSICAO_ATUAL_MENU--;
+                    }
                     tecla = 1;
                     break;
                 case ALLEGRO_KEY_DOWN:
+                    if(POSICAO_ATUAL_MENU == 2) {
+                        POSICAO_ATUAL_MENU = 0;
+                    }else{
+                        POSICAO_ATUAL_MENU++;
+                    }
                     tecla = 2;
-                    break;
-                case ALLEGRO_KEY_LEFT:
-                    tecla = 3;
-                    break;
-                case ALLEGRO_KEY_RIGHT:
-                    tecla = 4;
                     break;
                 }
             }
@@ -65,31 +70,24 @@ int main(void)
             switch (tecla)
             {
             case 1:
-                al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-                        ALTURA_TELA / 2 - al_get_font_ascent(fonte) / 2,
-                        ALLEGRO_ALIGN_CENTRE, "Seta para cima");
+                al_draw_text(fonte, al_map_rgb(255, 255, 255), 295,
+                       POSICAO_SETA_MENU[POSICAO_ATUAL_MENU],
+                        ALLEGRO_ALIGN_CENTRE, ">>>");
                 break;
             case 2:
-                al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-                        ALTURA_TELA / 2 - al_get_font_ascent(fonte) / 2,
-                        ALLEGRO_ALIGN_CENTRE, "Seta para baixo");
-                break;
-            case 3:
-                al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-                        ALTURA_TELA / 2 - al_get_font_ascent(fonte) / 2,
-                        ALLEGRO_ALIGN_CENTRE, "Seta esquerda");
-                break;
-            case 4:
-                al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA / 2,
-                        ALTURA_TELA / 2 - al_get_font_ascent(fonte) / 2,
-                        ALLEGRO_ALIGN_CENTRE, "Seta direita");
+                al_draw_text(fonte, al_map_rgb(255, 255, 255), 295,
+                        POSICAO_SETA_MENU[POSICAO_ATUAL_MENU],
+                        ALLEGRO_ALIGN_CENTRE, ">>>");
                 break;
             }
 
             tecla = 0;
         }
-
+        al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA/2, 260, ALLEGRO_ALIGN_CENTRE, "Jogar");
+        al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA/2, 300, ALLEGRO_ALIGN_CENTRE, "Menu");
+        al_draw_text(fonte, al_map_rgb(255, 255, 255), LARGURA_TELA/2, 340, ALLEGRO_ALIGN_CENTRE, "Sair");
         al_flip_display();
+
     }
 
     al_destroy_display(janela);
@@ -133,9 +131,9 @@ bool inicializar()
         return false;
     }
 
-    al_set_window_title(janela, "Utilizando o Teclado");
+    al_set_window_title(janela, "Menu ApoCleanWorld");
 
-    fonte = al_load_font("res/comic.ttf", 72, 0);
+    fonte = al_load_font("res/comic.ttf", 30, 0);
     if (!fonte)
     {
         fprintf(stderr, "Falha ao carregar \"fonte comic.ttf\".\n");
