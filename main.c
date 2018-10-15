@@ -10,6 +10,7 @@ const int ALTURA_TELA = 432;
 int POSICAO_SETA_MENU[3] = {260, 300, 340}, POSICAO_ATUAL_MENU = 0;
 
 ALLEGRO_DISPLAY *janela = NULL;
+ALLEGRO_DISPLAY *janela2 = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
 ALLEGRO_BITMAP *fundo = NULL;
 ALLEGRO_FONT *fonte = NULL;
@@ -55,6 +56,11 @@ int main(void)
                     }
                     tecla = 2;
                     break;
+                case ALLEGRO_KEY_ENTER:
+                    if(POSICAO_ATUAL_MENU == 2) tecla = 3;
+                    else if(POSICAO_ATUAL_MENU == 0) tecla = 4;
+                    else tecla = 5;
+                    break;
                 }
             }
             else if (evento.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -79,6 +85,16 @@ int main(void)
                         POSICAO_SETA_MENU[POSICAO_ATUAL_MENU],
                         ALLEGRO_ALIGN_CENTRE, ">>>");
                 break;
+            case 3:
+                al_destroy_display(janela);
+                al_destroy_event_queue(fila_eventos);
+            case 4:
+                al_destroy_display(janela);
+                janela2 = al_create_display(LARGURA_TELA, ALTURA_TELA);
+                fundo = al_load_bitmap("res/cidade1.jpg");
+                al_draw_bitmap(fundo, 0, 0, 0);
+                al_register_event_source(fila_eventos, al_get_keyboard_event_source());
+                al_register_event_source(fila_eventos, al_get_display_event_source(janela2));
             }
 
             tecla = 0;
