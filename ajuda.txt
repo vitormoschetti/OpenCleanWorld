@@ -1,0 +1,16 @@
+allegro: as funções de núcleo
+allegro_main: a biblioteca de compatibilidade que permite a função main() funcionar em todos os compiladores. Requerida apenas do OS X
+allegro_acodec: codecs de áudio, como Ogg e Wav
+allegro_audio: o subsistema básico de áudio
+allegro_color: conversão entre vários formatos de cor
+allegro_dialog: caixas de diálogo nativas, como “abrir arquivo…”
+allegro_font: fontes bitmap básicas
+allegro_image: formatos de imagem, como JPEG e PNG
+allegro_memfile: uma interface para carregar arquivos da memória
+allegro_physfs: uma interface para carregar arquivos de locais abstratas, como arquivos Zip
+allegro_primitives: funções básicas de desenho, como retângulos e linhas
+allegro_ttf: carregamento arquivos .ttf
+
+
+//preenchemos a janela de branco
+//al_clear_to_color(al_map_rgb(255, 255, 255));

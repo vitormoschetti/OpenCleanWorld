@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "allegro.h": "c",
+        "allegro_image.h": "c",
+        "allegro_ttf.h": "c",
+        "allegro_font.h": "c",
+        "tela_menu.h": "c"
+    },
+    "C_Cpp.intelliSenseEngineFallback": "Enabled"
+}

@@ -36,9 +36,25 @@
 			<Add option="-Wall" />
 			<Add directory="../Allegro5/include" />
 		</Compiler>
+		<Unit filename="allegro_util.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="allegro_util.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="mapa.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="mapa.h" />
+		<Unit filename="tela.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tela.h" />
+		<Unit filename="tela_menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tela_menu.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
