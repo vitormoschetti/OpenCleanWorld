@@ -4,7 +4,8 @@
         "allegro_image.h": "c",
         "allegro_ttf.h": "c",
         "allegro_font.h": "c",
-        "tela_menu.h": "c"
+        "tela_menu.h": "c",
+        "allegro_util.h": "c"
     },
     "C_Cpp.intelliSenseEngineFallback": "Enabled"
 }
