@@ -36,7 +36,6 @@
 			<Add option="-Wall" />
 			<Add directory="../Allegro5/include" />
 		</Compiler>
-		<Unit filename="allegro_util.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
