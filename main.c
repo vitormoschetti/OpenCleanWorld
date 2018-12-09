@@ -31,8 +31,6 @@ ALLEGRO_BITMAP *buffer_janela;
 ALLEGRO_BITMAP *fundo_mapa;
 ALLEGRO_BITMAP *chao;
 ALLEGRO_BITMAP *chao_vitoria;
-ALLEGRO_BITMAP *canteiro;
-ALLEGRO_BITMAP *sombra;
 ALLEGRO_BITMAP *garrafa;
 ALLEGRO_BITMAP *lata_lixo;
 ALLEGRO_BITMAP *barra;
@@ -41,7 +39,6 @@ ALLEGRO_BITMAP *icone_mundo_poluido;
 ALLEGRO_BITMAP *img_menu;
 ALLEGRO_FONT *fonte_normal;
 ALLEGRO_FONT *fonte_contador;
-ALLEGRO_FONT *fonte_pequena;
 ALLEGRO_EVENT_QUEUE *fila_eventos;
 ALLEGRO_TIMER *timer;
 ALLEGRO_SAMPLE *som_coleta;
@@ -65,7 +62,7 @@ float energia_garrafa = 20;
 float tempo_lata_lixo = 200;
 int ilata_lixo, nlata_lixo;
 int igarrafas, ngarrafas;
-float largura_lata_lixo, altura_lata_lixo, ratio_pneu;
+float largura_lata_lixo, altura_lata_lixo;
 float largura_garrafa, altura_garrafa;
 int garrafas_colhidas = 0;
 float pontos, distancia;
@@ -141,8 +138,6 @@ void finaliza_allegro(){
         al_destroy_bitmap(img_menu);
     if (fonte_normal)
         al_destroy_font(fonte_normal);
-    if (fonte_pequena)
-        al_destroy_font(fonte_pequena);
     if (fonte_contador)
         al_destroy_font(fonte_contador);
     if (fila_eventos)
@@ -256,9 +251,8 @@ int inicializa_allegro(){
     }
 
     fonte_normal = al_load_font("font/menu.ttf", 16, 0);
-    fonte_pequena = al_load_font("font/menu.ttf", 10, 0);
     fonte_contador = al_load_font("font/atari.ttf", 16, 0);
-    if (!fonte_normal || !fonte_pequena || !fonte_contador)
+    if (!fonte_normal || !fonte_contador)
     {
         mostra_janela_erro("Falha ao carregar fonte.");
         finaliza_allegro();
@@ -337,11 +331,9 @@ int inicializa_allegro(){
 
     srand(time(NULL));
 
-    sombra = al_create_bitmap(largura_tela, 5);
     chao = al_create_bitmap(largura_tela, altura_tela);
-    canteiro = al_create_bitmap(largura_tela, 30);
 
-    int i, j;
+    int i;
     al_set_target_bitmap(chao);
 
     chao_vitoria = al_clone_bitmap(chao);
@@ -349,13 +341,10 @@ int inicializa_allegro(){
 
     int alpha = 180;
     for (i = al_get_bitmap_height(fundo_mapa); i < altura_tela; i += 5){
-        al_set_target_bitmap(sombra);
         al_clear_to_color(al_map_rgba(0, 0, 0, alpha));
         alpha -= 3;
         al_set_target_bitmap(chao);
-        al_draw_bitmap(sombra, 0, i, 0);
         al_set_target_bitmap(chao_vitoria);
-        al_draw_bitmap(sombra, 0, i, 0);
     }
 
     al_set_target_bitmap(al_get_backbuffer(janela));
@@ -379,7 +368,6 @@ void init_heroi(){
         finaliza_allegro();
         return;
     }
-    int espaco = al_get_bitmap_height(chao) - al_get_bitmap_height(canteiro);
     heroi.largura_sprite = 46;
     heroi.altura_sprite = 275;
     heroi.colunas_sprite = 4;
@@ -414,6 +402,8 @@ void colisao_lata_lixo(){
             ok_y = 1;
         if (ok_x && ok_y){
             heroi.bate = 1;
+            morreu = 301;
+            mostra_tutorial = 0;
             return;
         }
     }
@@ -468,7 +458,7 @@ void atualiza_heroi(){
         if (heroi.bate)
         {
             heroi.sprite_inicial = 0;
-            heroi.sprite_final = 3;
+            heroi.sprite_final = 0;
         }
 
         heroi.coluna_atual++;
@@ -480,12 +470,8 @@ void atualiza_heroi(){
             heroi.coleta = 0;
             heroi.anda = 1;
         }
-        if (heroi.bate && sprite_atual == heroi.sprite_final)
-        {
-            heroi.bate = 0;
-            heroi.anda = 1;
-        }
-
+        
+        //Atualiza a posicao do sprite carregado na tela
         if (sprite_atual > heroi.sprite_final || sprite_atual < heroi.sprite_inicial)
         {
             heroi.linha_atual = heroi.sprite_inicial / heroi.colunas_sprite;
@@ -500,20 +486,11 @@ void atualiza_heroi(){
                 heroi.linha_atual = 0;
             }
         }
+
         heroi.regiao_x_folha = heroi.largura_sprite * heroi.coluna_atual;
         heroi.regiao_y_folha = heroi.altura_sprite * heroi.linha_atual;
 
-        if (heroi.bate)
-        {
-            if (heroi.correndo)
-                heroi.pos_x -= velocidade_mapa * 5;
-            else
-                heroi.pos_x -= velocidade_mapa * 3;
-            heroi.pos_y += movimento * heroi.velocidade;
-        }
-        else
-        {
-            if (heroi.correndo && heroi.folego > 0)
+        if (heroi.correndo && heroi.folego > 0)
             {
                 heroi.pos_x += heroi.velocidade * 2 - velocidade_mapa;
                 heroi.pos_y += movimento * heroi.velocidade * 2;
@@ -526,7 +503,7 @@ void atualiza_heroi(){
                 heroi.pos_y += movimento * heroi.velocidade;
                 heroi.frames_sprite = 4;
             }
-        }
+       
 
         if (heroi.pos_y >= 250)
             heroi.pos_y = 250;
@@ -579,8 +556,6 @@ void coleta_garrafa(){
         }
     }
 }
-
-
 
 void mostra_janela(int w, int h){
     al_draw_filled_rectangle(largura_tela / 2 - w / 2 - 5, altura_tela / 2 - h / 2 - 5, largura_tela / 2 + w / 2, altura_tela / 2 + h / 2, al_map_rgb(128, 0, 0));
@@ -660,16 +635,12 @@ void menu(){
         al_clear_to_color(al_map_rgb(0, 0, 0));
 
 
-        //desenha retangulo marrom na tela
+        //desenha retangulo com a imagem de fundo
         float w = altura_tela * al_get_bitmap_width(img_menu) / al_get_bitmap_height(img_menu);
         al_draw_scaled_bitmap(img_menu, 0, 0, al_get_bitmap_width(img_menu), al_get_bitmap_height(img_menu),
                               largura_tela / 2 - w / 2, 0,
                               w, altura_tela,
                               0);
-
-        al_draw_filled_rounded_rectangle(x_menu - w / 2 + 10, y_menu - menu_inc * 2,
-                x_menu + w / 2 - 10, y_menu - menu_inc * 2 + al_get_font_line_height(fonte_contador),
-                6, 6, al_map_rgba(0, 0, 0, 85));
 
         for (i = 0; i < tam_menu; i++)
         {
@@ -764,7 +735,7 @@ void verifica_tutorial(){
         janela_tutorial = 1;
         pausa = 1;
     }
-    else if (mostra_tutorial == 7 && heroi.folego < 120)
+    else if (mostra_tutorial == 7 && heroi.folego < 135)
     {
         float w = al_get_bitmap_width(barra);
         float h = al_get_bitmap_height(barra) / 2;
@@ -786,8 +757,6 @@ void verifica_tutorial(){
     }
     else if (mostra_tutorial == 9)
     {
-        float w = largura_tela - 225;
-        float h = altura_tela - 55;
         mostra_janela(500, 150);
         al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 - 45, ALLEGRO_ALIGN_CENTRE, "Na parte de cima voce encontra");
         al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 - 20, ALLEGRO_ALIGN_CENTRE, "seu progresso no jogo.");
@@ -809,17 +778,9 @@ void verifica_tutorial(){
         mostra_janela(450, 100);
         al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 - 20, ALLEGRO_ALIGN_CENTRE, "PARABENS!");
         al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 + 5, ALLEGRO_ALIGN_CENTRE, "Voce completou o tutorial.");
-        al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 + 30, ALLEGRO_ALIGN_CENTRE, "Agora é com voce!");
+        al_draw_textf(fonte_contador, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 + 30, ALLEGRO_ALIGN_CENTRE, "Agora e com voce!");
         janela_tutorial = 1;
         pausa = 1;
-    }
-    else if (mostra_tutorial == 9 && venceu > 100)
-    {
-        mostra_janela(450, 100);
-        al_draw_textf(fonte_normal, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 - 20, ALLEGRO_ALIGN_CENTRE, "PARABENS!");
-        al_draw_textf(fonte_normal, al_map_rgb(0, 0, 0), largura_tela / 2, altura_tela / 2 + 5, ALLEGRO_ALIGN_CENTRE, "Voce completou o tutorial.");
-        janela_tutorial = 1;
-        mostra_tutorial = 0;
     }
 }
 
@@ -835,6 +796,8 @@ void pre_jogo(){
     tempo_lata_lixo = 200;
     esperando=0;
     pausa=0;
+    pontos = 0;
+    distancia = 0;
     garrafas_colhidas=0;
     janela_tutorial=0;
     mostra_partida=1;
@@ -856,13 +819,13 @@ void pre_jogo(){
     al_play_sample(som_corre, 0.8, 0.0, 0.7, ALLEGRO_PLAYMODE_LOOP, &id_som);
 
 
-    float tempo_arvore_temp = tempo_lata_lixo;
+    float tempo_lata_temp = tempo_lata_lixo;
     float velocidade_mapa_temp = velocidade_mapa;
     int i;
     if (mostra_tutorial)
     for (i=0 ; velocidade_mapa_temp < heroi.velocidade*3/2; i++){
-        if (tempo_arvore_temp>TEMPO_LATA_LIXO_MIN){
-            tempo_arvore_temp *= 0.9;
+        if (tempo_lata_temp>TEMPO_LATA_LIXO_MIN){
+            tempo_lata_temp *= 0.90;
             velocidade_mapa_temp+=0.075;
         }
         else
@@ -1008,12 +971,9 @@ void jogo(){
         al_draw_bitmap(chao,parallax_chao-largura_tela,0,0);
         for (j=0 ; j<4 ; j++){
             for (i=-al_get_bitmap_width(fundo_mapa) ; i<largura_tela ; i+=al_get_bitmap_width(fundo_mapa)){
-               // al_draw_bitmap(fundo_mapa[j],i + parallax_fundo[j],0,0);
                 al_draw_bitmap(fundo_mapa, i + parallax_fundo, 0, 0);
             }
         }
-        al_draw_bitmap(canteiro, parallax_chao, al_get_bitmap_height(fundo_mapa) - al_get_bitmap_height(canteiro) / 2, 0);
-        al_draw_bitmap(canteiro,parallax_chao-largura_tela,al_get_bitmap_height(fundo_mapa)-al_get_bitmap_height(canteiro)/2,0);
 
         for (i=0 ; i<ngarrafas ; i++){
             if (garrafas[i].vida > 0)
@@ -1038,24 +998,15 @@ void jogo(){
                 al_draw_scaled_bitmap(latas_lixo[i].folha_sprite, latas_lixo[i].regiao_x_folha, latas_lixo[i].regiao_y_folha, latas_lixo[i].largura_sprite, latas_lixo[i].altura_sprite, latas_lixo[i].pos_x, latas_lixo[i].pos_y, largura_lata_lixo, altura_lata_lixo, 0);
         }
 
-        //desenha_avalanche_lixo();
-
-        //al_draw_textf(fonte_contador, al_map_rgb(255,255,255), 20, 80, ALLEGRO_ALIGN_LEFT, "%.4f", cont_tempo/tempo_percurso);
-        //al_draw_textf(fonte_contador, al_map_rgb(255,255,255), 20, 100, ALLEGRO_ALIGN_LEFT, "%.4f", velocidade_mapa);
-
         float w = al_get_bitmap_width(barra);
-        float h = al_get_bitmap_height(barra)/2;
 
-        //al_draw_filled_rounded_rectangle(0, 0, 10 + w, 10 + 15 + h, 3, 3, al_map_rgba(0,25,0,100));
         al_draw_bitmap_region(barra, 0, 0, al_get_bitmap_width(barra), al_get_bitmap_height(barra)/2, 5, 5, 0);
         al_draw_bitmap_region(barra, 0, al_get_bitmap_height(barra)/2, (float)heroi.folego/MAX_FOLEGO * al_get_bitmap_width(barra), al_get_bitmap_height(barra)/2, 5, 5, 0);
         al_draw_textf(fonte_normal, al_map_rgb(255,0,0), (10 + w)/2, 35, ALLEGRO_ALIGN_CENTRE, "PONTOS: %.0f", pontos);
 
         w = 200;
-        h = 40;
 
         //progresso da corrida
-        //al_draw_filled_rounded_rectangle(largura_tela - 225, altura_tela - 55, largura_tela - 225 + w, altura_tela - 55 + h, 3, 3, al_map_rgba(0,25,0,100));
         al_draw_line(largura_tela - 225 + 15, altura_tela - 380 + 15, largura_tela - 225 + 15 + (w+280)*cont_tempo/tempo_percurso,
         altura_tela - 380 + 15, al_map_rgb(255,0,0), 2);
         al_draw_line(largura_tela - 225 + 15 + (w+280)*cont_tempo/tempo_percurso, altura_tela - 380 + 15, largura_tela - 225 + w - 15, altura_tela - 380 + 15, al_map_rgb(0,255,0), 2);
